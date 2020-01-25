@@ -10,22 +10,53 @@ public class Indicator : MonoBehaviour
 
     public float valueMax;
     public float valueMin;
+    private float percentage;
 
-    [Range(1.0f, 10.0f)]
-    public float size = 1;
-    //ToDo, fade between two colors
-    public float color;
+    private Color lerpedColor;
+    public Color minColor = Color.blue;
+    public Color maxColor = Color.red;
 
-    // Start is called before the first frame update
-    void Start()
+    public bool colorMode = false;
+    public bool sizeMode = false;
+
+    float calculatePercentage(float input)
     {
-        
+        return ((input - valueMin)) / (valueMax - valueMin);
     }
 
-    // Update is called once per frame
+    void SetColor()
+    {
+        percentage = calculatePercentage(value);
+        lerpedColor = Color.Lerp(minColor, maxColor, percentage);
+        GetComponent<Renderer>().material.SetColor("_Color", lerpedColor);
+    }
+
+    void SetSize()
+    {
+        percentage = calculatePercentage(value);
+        transform.localScale = new Vector3(1, 1, 1) * percentage;
+    }
+
     void Update()
     {
         transform.position = position;
-        transform.localScale += new Vector3(1, 1, 1) * size;
+
+        if(colorMode)
+        {
+            SetColor();
+        }
+        else
+        {
+            GetComponent<Renderer>().material.SetColor("_Color", minColor);
+        }
+
+        if(sizeMode)
+        {
+            SetSize();
+        }
+        else
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 }

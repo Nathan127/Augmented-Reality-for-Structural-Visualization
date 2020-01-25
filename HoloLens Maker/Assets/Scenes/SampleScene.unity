@@ -257,7 +257,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &338454366
 Transform:
   m_ObjectHideFlags: 0
@@ -355,8 +355,10 @@ MonoBehaviour:
   position: {x: 0, y: 0, z: 0}
   valueMax: 0
   valueMin: 0
-  size: 1
-  color: 0
+  minColor: {r: 0, g: 0, b: 1, a: 1}
+  maxColor: {r: 1, g: 0, b: 0, a: 1}
+  colorMode: 0
+  sizeMode: 0
 --- !u!135 &521620267
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -605,7 +607,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1690439298
 Transform:
   m_ObjectHideFlags: 0

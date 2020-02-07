@@ -49,6 +49,16 @@ namespace DataCollection
         public float value;
 
         /// <summary>
+        /// Minimum value that has been seen
+        /// </summary>
+        public float minValue;
+
+        /// <summary>
+        /// Maximum value that has been seen
+        /// </summary>
+        public float maxValue;
+
+        /// <summary>
         /// Change in value compared to the last frame
         /// </summary>
         public float deltaLastFrame;
@@ -249,7 +259,10 @@ namespace DataCollection
                     newFrame.values[i].value = Convert.ToSingle(newInput[i + 2]);
                     newFrame.values[i].deltaLastFrame = lastFrame != null ? newFrame.values[i].value - lastFrame.values[i].value : 0;
                     newFrame.values[i].deltaLastZero = ZeroFrame != null ? newFrame.values[i].value - ZeroFrame.values[i].value : 0;
-                    
+                    newFrame.values[i].maxValue = lastFrame != null ? lastFrame.values[i].maxValue : float.MinValue;
+                    newFrame.values[i].minValue = lastFrame != null ? lastFrame.values[i].minValue : float.MaxValue;
+                    newFrame.values[i].maxValue = newFrame.values[i].value > lastFrame.values[i].maxValue ? newFrame.values[i].value : lastFrame.values[i].maxValue;
+                    newFrame.values[i].minValue = newFrame.values[i].value < lastFrame.values[i].minValue ? newFrame.values[i].value : lastFrame.values[i].minValue;
                 }
                 updates.Enqueue(newFrame);
                 if (ZeroFrame == null)

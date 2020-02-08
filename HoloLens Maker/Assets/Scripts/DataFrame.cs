@@ -5,6 +5,8 @@ using System.Threading;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.IO.Ports;
+using UnityEngine;
 namespace DataCollection
 {
 
@@ -24,7 +26,7 @@ namespace DataCollection
     internal class DataPointMapping
     {
         public string name;
-        public float position;
+        public Vector3 position;
         public Unit unit;
     }
 
@@ -37,11 +39,11 @@ namespace DataCollection
         /// mapping of the value to channel related data
         /// </summary>
         private DataPointMapping mapping;
+
         internal DataPoint(DataPointMapping mapping)
         {
             this.mapping = mapping;
         }
-
 
         /// <summary>
         /// value of the channel
@@ -71,7 +73,7 @@ namespace DataCollection
         /// <summary>
         /// channel number
         /// </summary>
-        public float position => mapping.position;
+        public Vector3 position => mapping.position;
 
         /// <summary>
         /// name of the channel
@@ -240,7 +242,7 @@ namespace DataCollection
                 {
                     mappings[j].unit = UnitTypeParseMap[unitGroup.Value];
                 }
-                mappings[j].position = j;
+                mappings[j].position = new Vector3(j,0,0);
                 j++;
             }
 
@@ -334,6 +336,36 @@ namespace DataCollection
             {
                 Thread.Sleep(100);
             }
+            return line;
+        }
+    }
+
+    public class SerialDataSource : IDataSource, IDisposable
+    {
+        SerialPort port;
+        int writtenHeader;
+        string[] header;
+        public SerialDataSource(string portName, string[] header)
+        {
+            this.header = header;
+            writtenHeader = 0;
+            port =new SerialPort(portName, 9600,Parity.None,8,StopBits.One);
+        }
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public String readLine()
+        {
+            if(writtenHeader != header.Length)
+            {
+                writtenHeader += 1;
+                return header[writtenHeader - 1];
+            }
+            string line = port.ReadLine();
+            while (!string.IsNullOrEmpty(line))
+                line = port.ReadLine();
             return line;
         }
     }

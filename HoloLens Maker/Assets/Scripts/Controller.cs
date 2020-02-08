@@ -84,8 +84,7 @@ public class Controller : MonoBehaviour
 
         for (int i = 0; i < MainCollection.currentInfo.values.Length; i++)
         {
-            //CreateSpherePrefab(dataPoint.position, Quaternion.identity);
-            CreateSpherePrefab(DataPoint.position, Quaternion.identity);
+            CreateSpherePrefab(MainCollection.currentInfo.values[i].position, Quaternion.identity);
             sphereList[i].GetComponentInChildren<Indicator>().colorMode = true;
         }
     }

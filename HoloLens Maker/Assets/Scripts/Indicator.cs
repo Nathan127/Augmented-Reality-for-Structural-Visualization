@@ -39,7 +39,7 @@ public class Indicator : MonoBehaviour
 
     void Update()
     {
-        transform.position = position;
+        //transform.position = position;
 
         if(colorMode)
         {

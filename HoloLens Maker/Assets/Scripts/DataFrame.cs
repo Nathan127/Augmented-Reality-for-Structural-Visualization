@@ -261,8 +261,11 @@ namespace DataCollection
                     newFrame.values[i].deltaLastZero = ZeroFrame != null ? newFrame.values[i].value - ZeroFrame.values[i].value : 0;
                     newFrame.values[i].maxValue = lastFrame != null ? lastFrame.values[i].maxValue : float.MinValue;
                     newFrame.values[i].minValue = lastFrame != null ? lastFrame.values[i].minValue : float.MaxValue;
-                    newFrame.values[i].maxValue = newFrame.values[i].value > lastFrame.values[i].maxValue ? newFrame.values[i].value : lastFrame.values[i].maxValue;
-                    newFrame.values[i].minValue = newFrame.values[i].value < lastFrame.values[i].minValue ? newFrame.values[i].value : lastFrame.values[i].minValue;
+                    if (lastFrame != null)
+                    {
+                        newFrame.values[i].maxValue = newFrame.values[i].value > lastFrame.values[i].maxValue ? newFrame.values[i].value : lastFrame.values[i].maxValue;
+                        newFrame.values[i].minValue = newFrame.values[i].value < lastFrame.values[i].minValue ? newFrame.values[i].value : lastFrame.values[i].minValue;
+                    }
                 }
                 updates.Enqueue(newFrame);
                 if (ZeroFrame == null)

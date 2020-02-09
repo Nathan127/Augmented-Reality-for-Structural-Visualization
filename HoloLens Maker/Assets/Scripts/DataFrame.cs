@@ -18,6 +18,7 @@ namespace DataCollection
         Pound,
         Kip,
         Psi,
+        Volts
     }
 
     /// <summary>
@@ -138,6 +139,9 @@ namespace DataCollection
             {
                 "[in]",
                 Unit.Inch
+            },
+            { "[V]",
+                Unit.Volts
             }
         };
 
@@ -353,10 +357,12 @@ namespace DataCollection
             this.header = header;
             writtenHeader = 0;
             port =new SerialPort(portName, 9600,Parity.None,8,StopBits.One);
+            port.Open();
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            port.Close();
+            port.Dispose();
         }
 
         public String readLine()
@@ -367,7 +373,7 @@ namespace DataCollection
                 return header[writtenHeader - 1];
             }
             string line = port.ReadLine();
-            while (!string.IsNullOrEmpty(line))
+            while (string.IsNullOrEmpty(line))
                 line = port.ReadLine();
             return line;
         }

@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
 {
     public static Parser MainCollection;
     public static FakeDataSource fakeSource;
+    public static SerialDataSource serialDataSource;
 
     public GameObject arrowPrefab;
     public GameObject spherePrefab;
@@ -24,7 +25,15 @@ public class Controller : MonoBehaviour
     void Start()
     {
         fakeSource = new FakeDataSource("CLT Composite Beams Board1 2by10 Panel 1.ASC", 200);
-        MainCollection = new Parser(fakeSource);
+        serialDataSource = new SerialDataSource("Com3", new string[] {
+        "DASYLab - V 11.00.00",
+        "Worksheet name: 6by10beamlayout",
+        "Recording date: 7 / 1 / 2016,  4:52:39 PM",
+        "Block length: 2",
+        "Delta: 1.0 sec.",
+        "Number of channels: 1",
+        "Date;Measurement time[hh:mm:ss];voltage [V];"});
+        MainCollection = new Parser(serialDataSource);
         MainCollection.start();
     }
 
@@ -53,21 +62,21 @@ public class Controller : MonoBehaviour
 
     void CreateArrowPrefab(Vector3 position, Quaternion rotation)
     {
-        GameObject newArrow = Instantiate(arrowPrefab, position, rotation);
+        GameObject newArrow = Instantiate(arrowPrefab, position, rotation, transform);
         newArrow.name = "ArrowIndicator" + arrowList.Count;
         arrowList.Add(newArrow);
     }
 
     void CreateSpherePrefab(Vector3 position, Quaternion rotation)
     {
-        GameObject newSphere = Instantiate(spherePrefab, position, rotation);
+        GameObject newSphere = Instantiate(spherePrefab, position, rotation, transform);
         newSphere.name = "SphereIndicator" + sphereList.Count;
         sphereList.Add(newSphere);
     }
 
     void CreateHeatMapPrefab(Vector3 position, Quaternion rotation)
     {
-        GameObject newHeatMap = Instantiate(heatMapPrefab, position, rotation);
+        GameObject newHeatMap = Instantiate(heatMapPrefab, position, rotation,transform);
         newHeatMap.name = "HeatMapIndicator" + heatList.Count;
         heatList.Add(newHeatMap);
     }
@@ -76,6 +85,7 @@ public class Controller : MonoBehaviour
     {
         MainCollection.Dispose();
         fakeSource.Dispose();
+        serialDataSource.Dispose();
     }
 
     private void CreateSensors()

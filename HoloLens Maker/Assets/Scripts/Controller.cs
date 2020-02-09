@@ -31,8 +31,8 @@ public class Controller : MonoBehaviour
         "Recording date: 7 / 1 / 2016,  4:52:39 PM",
         "Block length: 2",
         "Delta: 1.0 sec.",
-        "Number of channels: 1",
-        "Date;Measurement time[hh:mm:ss];voltage [V];"});
+        "Number of channels: 2",
+        "Date;Measurement time[hh:mm:ss];voltage [V];voltage2 [V];"});
         MainCollection = new Parser(serialDataSource);
         MainCollection.start();
     }

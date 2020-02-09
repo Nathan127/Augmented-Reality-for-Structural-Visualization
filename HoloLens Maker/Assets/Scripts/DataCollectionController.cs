@@ -7,8 +7,6 @@ using System.IO;
 
 public class DataCollectionController : MonoBehaviour
 {
-    public static Parser MainCollection;
-    public static FakeDataSource fakeSource;
     public bool isDebug;
     public GameObject Canvas;
     public GameObject Text;
@@ -16,9 +14,6 @@ public class DataCollectionController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        fakeSource = new FakeDataSource("CLT Composite Beams Board1 2by10 Panel 1.ASC", 200);
-        MainCollection = new Parser(fakeSource);
-        MainCollection.start();
         if(isDebug == true)
         {
             Canvas = GameObject.Instantiate(Canvas);
@@ -38,7 +33,6 @@ public class DataCollectionController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MainCollection.UpdateBeforeDraw();
         if (!isDebug)
             return;
         var elementGroup = Canvas.transform.GetChild(0);
@@ -46,9 +40,9 @@ public class DataCollectionController : MonoBehaviour
         {
             GameObject.Destroy(elementGroup.GetChild(i - 1).gameObject);
         }
-        for (int i = 0; i < MainCollection.currentInfo.values.Length; i++)
+        for (int i = 0; i < Controller.MainCollection.currentInfo.values.Length; i++)
         {
-            DataPoint point = MainCollection.currentInfo.values[i];
+            DataPoint point = Controller.MainCollection.currentInfo.values[i];
             
             var newLabel = GameObject.Instantiate(Text, elementGroup);
             newLabel.GetComponent<Text>().text = point.sensorName;
@@ -69,11 +63,5 @@ public class DataCollectionController : MonoBehaviour
             }
             newText.GetComponent<Text>().text = $"{displayValue:#0.0000} {point.unit}";
         }
-    }
-
-    private void OnDestroy()
-    {
-        MainCollection.Dispose();
-        fakeSource.Dispose();
     }
 }

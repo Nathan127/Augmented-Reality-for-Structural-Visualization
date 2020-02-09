@@ -4,7 +4,11 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 18
+<<<<<<< HEAD
   productGUID: fbf0506ccbdbf024a8c19ac4953e393a
+=======
+  productGUID: c79d31b73bbb28a4eb5698bf1e470446
+>>>>>>> a1f611a45c3b33178ea25dbe7f464210e9ae0065
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -13,7 +17,11 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
+<<<<<<< HEAD
   productName: SVAR
+=======
+  productName: HoloLens Maker
+>>>>>>> a1f611a45c3b33178ea25dbe7f464210e9ae0065
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -553,10 +561,15 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
+<<<<<<< HEAD
   scriptingDefineSymbols:
     14: DOTNETWINRT_PRESENT
   platformArchitecture:
     iPhone: 1
+=======
+  scriptingDefineSymbols: {}
+  platformArchitecture: {}
+>>>>>>> a1f611a45c3b33178ea25dbe7f464210e9ae0065
   scriptingBackend:
     Standalone: 1
   il2cppCompilerConfiguration: {}
@@ -568,7 +581,10 @@ PlayerSettings:
   gcIncremental: 0
   gcWBarrierValidation: 0
   apiCompatibilityLevelPerPlatform:
+<<<<<<< HEAD
     '': 6
+=======
+>>>>>>> a1f611a45c3b33178ea25dbe7f464210e9ae0065
     Standalone: 3
   m_RenderingPath: 1
   m_MobileRenderingPath: 1

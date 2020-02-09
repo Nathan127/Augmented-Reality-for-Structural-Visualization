@@ -10,6 +10,11 @@ HoloLens Maker/[Bb]uilds/
 HoloLens Maker/[Ll]ogs/
 HoloLens Maker/[Mm]emoryCaptures/
 
+
+HoloLens Maker/App
+HoloLens Maker/SVAR
+HoloLens Maker/SVARx86
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 

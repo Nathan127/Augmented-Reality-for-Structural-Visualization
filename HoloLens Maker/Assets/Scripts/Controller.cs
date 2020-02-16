@@ -31,8 +31,8 @@ public class Controller : MonoBehaviour
         "Recording date: 7 / 1 / 2016,  4:52:39 PM",
         "Block length: 2",
         "Delta: 1.0 sec.",
-        "Number of channels: 2",
-        "Date;Measurement time[hh:mm:ss];voltage [V];voltage2 [V];"});
+        "Number of channels: 3",
+        "Date;Measurement time[hh:mm:ss];voltage [V];voltage2 [V]; volage3 [V];"});
         MainCollection = new Parser(serialDataSource);
         MainCollection.start();
     }
@@ -96,6 +96,7 @@ public class Controller : MonoBehaviour
         {
             CreateSpherePrefab(MainCollection.currentInfo.values[i].position, Quaternion.identity);
             sphereList[i].GetComponentInChildren<Indicator>().colorMode = true;
+            sphereList[i].GetComponentInChildren<Indicator>().sensorName = MainCollection.currentInfo.values[i].sensorName;
         }
     }
 }

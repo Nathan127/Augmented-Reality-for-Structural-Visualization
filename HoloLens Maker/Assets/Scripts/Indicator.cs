@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Indicator : MonoBehaviour
@@ -18,6 +19,8 @@ public class Indicator : MonoBehaviour
 
     public bool colorMode = false;
     public bool sizeMode = false;
+
+    public GameObject TextMesh;
 
     float calculatePercentage(float input)
     {
@@ -39,9 +42,11 @@ public class Indicator : MonoBehaviour
 
     void Update()
     {
-        //transform.position = position;
+        TextMesh.GetComponent<TextMeshPro>().text = $"{sensorName}: {value}";
+        TextMesh.GetComponent<TextMeshPro>().transform.rotation = Quaternion.LookRotation(this.transform.position - Camera.main.transform.position );
 
-        if(colorMode)
+
+        if (colorMode)
         {
             SetColor();
         }

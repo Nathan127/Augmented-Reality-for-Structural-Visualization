@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="SensorDefinition" nillable="true" type="DataHeader" />
+  <xs:complexType name="DataHeader">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="DeltaTime" nillable="true" type="xs:float" />
+      <xs:element minOccurs="1" maxOccurs="1" name="SourceType" type="DataSourceType" />
+      <xs:element minOccurs="0" maxOccurs="1" name="SourceLocation" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="DataPoints" type="ArrayOfDataPointDefinition" />
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="Delimeter" type="xs:string" />
+  </xs:complexType>
+  <xs:simpleType name="DataSourceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FILE" />
+      <xs:enumeration value="SERIAL" />
+      <xs:enumeration value="NETWORK" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ArrayOfDataPointDefinition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DataPointDefinition" nillable="true" type="DataPointDefinition" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DataPointDefinition">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="X" nillable="true" type="xs:float" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Y" nillable="true" type="xs:float" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Z" nillable="true" type="xs:float" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Index" nillable="true" type="xs:unsignedInt" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Units" nillable="true" type="Unit" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Min" nillable="true" type="FloatRange" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Max" nillable="true" type="FloatRange" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="Unit">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="Foot" />
+      <xs:enumeration value="Inch" />
+      <xs:enumeration value="Pound" />
+      <xs:enumeration value="Kip" />
+      <xs:enumeration value="Psi" />
+      <xs:enumeration value="Volts" />
+      <xs:enumeration value="Degrees" />
+      <xs:enumeration value="Radians" />
+      <xs:enumeration value="Seconds" />
+      <xs:enumeration value="Meters" />
+      <xs:enumeration value="Kilograms" />
+      <xs:enumeration value="Ampere" />
+      <xs:enumeration value="Kelvin" />
+      <xs:enumeration value="herts" />
+      <xs:enumeration value="watt" />
+      <xs:enumeration value="pascal" />
+      <xs:enumeration value="joule" />
+      <xs:enumeration value="farad" />
+      <xs:enumeration value="ohm" />
+      <xs:enumeration value="tesla" />
+      <xs:enumeration value="luman" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="FloatRange">
+    <xs:simpleContent>
+      <xs:extension base="xs:float">
+        <xs:attribute name="isFixed" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

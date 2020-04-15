@@ -6,6 +6,8 @@ SVAR is a system that takes in sensor data and produces real time scientific vis
 This tool will be developed to display through Microsoft’s Augmented Reality (AR) device, the HoloLens. Augmented
 reality will allow for data visualization on top of physical experiments.
 
+## Hardware
+To run this software you will need a HoloLens Gen 1, and a computer that can run the mixed reality toolkit
 ## Setup
 The setup of this repo is long and complicated. This is readme contains a **very** stripped down version of the development enviroment setup. Here a link to the pdf we used developed to setup the development enviroment
 [Link to Setup pdf](https://drive.google.com/a/oregonstate.edu/file/d/1oUkUq7KiI3Z6mWifp752n-0yzJQIxaVc/view?usp=sharing)

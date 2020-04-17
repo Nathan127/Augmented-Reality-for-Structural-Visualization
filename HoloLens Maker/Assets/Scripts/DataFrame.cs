@@ -7,7 +7,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO.Ports;
 using System.Threading.Tasks;
-using SlowFileWriter;
+using System.Net.Sockets;
+using System.Net;
+using Unity;
+using UnityEngine;
+
 namespace DataCollection
 {
     /// <summary>
@@ -257,13 +261,13 @@ namespace DataCollection
                 newFrame.frameTime = DateTime.Now;
                 for (int i = 0; i < mapping.Length; i++)
                 {
-                    
+                    newFrame.values[i] = new DataPoint(mapping[i]);
                     if (newInput.Length <= header.DataPoints[i].index)
                         continue;
                     bool parsed = float.TryParse(newInput[header.DataPoints[i].index], out float value);
                     if (parsed == false)
                     {
-                        newFrame.values[i] = new DataPoint(mapping[i]);
+                        
                         newFrame.values[i].deltaLastFrame = 0;
                         newFrame.values[i].deltaLastZero = 0;
                     }
@@ -560,8 +564,166 @@ namespace DataCollection
         }
     }
 
-    public class NetworkDataSource
+    public class NetworkDataSource : IDataSource, IDisposable
     {
+        /// <summary>
+        /// Dispose of the object
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
+        /// <summary>
+        /// Dispose of the object
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (listenSocket != null)
+                {
+                    listenSocket.Dispose();
+                    listenThread.Abort();
+                    recieveThread.Abort();
+                    
+                }
+
+            }
+        }
+
+        private class SocketInformation
+        {
+            public SocketInformation(Socket client)
+            {
+                this.client = client;
+                WriteProect = new Mutex();
+            }
+            public Socket client;
+            public string lastRead = "";
+            public string bufferString = "";
+            public Mutex WriteProect;
+        }
+
+
+        private DataHeader header;
+        private int port;
+        private Socket listenSocket;
+        private List<SocketInformation> clients;
+        private Thread listenThread;
+        private Thread recieveThread;
+
+        public NetworkDataSource(int port)
+        {
+            this.port = port;
+            CreateSocket();
+        }
+
+        public NetworkDataSource(int port, DataHeader header)
+        {
+            this.port = port;
+            this.header = header;
+            CreateSocket();
+            listenThread.Start();
+            recieveThread.Start();
+        }
+
+        private void CreateSocket()
+        {
+            clients = new List<SocketInformation>();
+            listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            listenSocket.Bind(new IPEndPoint(IPAddress.Any, this.port));
+            listenThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    listenSocket.Listen(1);
+                    Socket newClient = listenSocket.Accept();
+                    lock(clients)
+                    {
+                        clients.Add(new SocketInformation(newClient));
+                    }
+                }
+            });
+            recieveThread = new Thread(new ThreadStart(recieveData));
+
+            
+
+        }
+
+        private void recieveData()
+        {
+            while(true)
+            {
+                try
+                {
+                    for (int i = 0; i < clients.Count; i++)
+                    {
+                        SocketInformation client = null;
+                        lock (clients)
+                        {
+                            if (i >= clients.Count)
+                                continue;
+                            client = clients[i];
+                        }
+
+                        if (!client.client.Connected)
+                        {
+                            lock (clients)
+                            {
+                                clients.RemoveAt(i);
+                            }
+                            i--;
+                            continue;
+                        }
+                        byte[] buffer = new byte[1024];
+                        int bytesRead = client.client.Receive(buffer);
+                        if (bytesRead != 0)
+                        {
+                            
+                            client.bufferString += System.Text.Encoding.ASCII.GetString(buffer.Take(bytesRead).ToArray());
+                            string[] splits = client.bufferString.Split('\n');
+                            if(splits.Length > 1)
+                            {
+                                client.WriteProect.WaitOne();
+                                client.lastRead = splits[splits.Length - 2];
+                                client.bufferString = splits[splits.Length - 1];
+                                client.WriteProect.ReleaseMutex();
+                            }
+
+                        }
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        public InternalDataHeader readInternalDataHeader()
+        {
+            return header;
+        }
+
+        public string readLine()
+        {
+            string toReturn = "";
+            for (int i = 0; i < clients.Count; i++)
+            {
+                SocketInformation client = null;
+                lock(clients)
+                {
+                    if (i >= clients.Count)
+                        continue;
+                    client = clients[i];
+                }
+                client.WriteProect.WaitOne();
+                toReturn += client.lastRead + ";";
+                client.WriteProect.ReleaseMutex();
+            }
+            return toReturn;
+        }
     }
 }

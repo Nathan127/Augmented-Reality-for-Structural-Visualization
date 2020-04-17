@@ -12,8 +12,9 @@ public class Controller : MonoBehaviour
 {
     //Set data collection sources, both fake and the real data from the Arduino
     public static Parser MainCollection;
-    public static FakeDataSource fakeSource;
-    public static SerialDataSource serialDataSource;
+    //public static FakeDataSource fakeSource;
+    //public static SerialDataSource serialDataSource;
+    public static NetworkDataSource dataSource;
 
     //Allows prefabs to be easily set in the editor
     public GameObject arrowPrefab;
@@ -31,23 +32,58 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        bool couldReadHeader = DataHeader.TryReadHeader("Configuration.json", out DataHeader header);
+        IDataSource dataSource = null;
+        if(!couldReadHeader)
+        {
+            File.Create("Configuration.json");
+            header = new DataHeader();
+            header.Delimeter = ";";
+            header.DeltaTime = .1f;
+            header.DataPoints = new DataPointDefinition[2];
+            for (int i = 0; i < header.DataPoints.Length; i++)
+            {
+                header.DataPoints[i] = new DataPointDefinition();
+                header.DataPoints[i].X = i;
+            }
+            dataSource = new NetworkDataSource(3015, header);
+        }
+        else
+        {
+            switch(header.SourceType)
+            {
+                case DataSourceType.FILE:
+                    dataSource = new FakeDataSource(header.SourceLocation);
+                    break;
+                case DataSourceType.NETWORK:
+                    dataSource = new NetworkDataSource(3015, header);
+                    break;
+                case DataSourceType.SERIAL:
+                    dataSource = new SerialDataSource(string.IsNullOrEmpty(header.SourceLocation) ? "Com3" : header.SourceLocation);
+                    break;
+            }
+        }
         //Sets up both the fake data source and the real data from the ardiuno
-        fakeSource = new FakeDataSource("CLT Composite Beams Board1 2by10 Panel 1.ASC", 200);
-        serialDataSource = new SerialDataSource("Com3", new string[] {
-        "DASYLab - V 11.00.00",
-        "Worksheet name: 6by10beamlayout",
-        "Recording date: 7 / 1 / 2016,  4:52:39 PM",
-        "Block length: 2",
-        "Delta: 1.0 sec.",
-        "Number of channels: 3",
-        "Date;Measurement time[hh:mm:ss];voltage [V];voltage2 [V]; volage3 [V];"});
-        MainCollection = new Parser(serialDataSource);
+        //fakeSource = new FakeDataSource("CLT Composite Beams Board1 2by10 Panel 1.ASC", 200);
+        //serialDataSource = new SerialDataSource("Com3", new string[] {
+        //"DASYLab - V 11.00.00",
+        //"Worksheet name: 6by10beamlayout",
+        //"Recording date: 7 / 1 / 2016,  4:52:39 PM",
+        //"Block length: 2",
+        //"Delta: 1.0 sec.",
+        //"Number of channels: 3",
+        //"Date;Measurement time[hh:mm:ss];voltage [V];voltage2 [V]; volage3 [V];"});
+
+        MainCollection = new Parser(dataSource);
         MainCollection.start();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (MainCollection == null)
+            return;
         MainCollection.UpdateBeforeDraw();
         //Make sure the data source has sensors ready and hasn't already been called before calling createSensors
         if(MainCollection.currentInfo.values.Length > 0)
@@ -98,8 +134,9 @@ public class Controller : MonoBehaviour
     private void OnDestroy()
     {
         MainCollection.Dispose();
-        fakeSource.Dispose();
-        serialDataSource.Dispose();
+        //fakeSource.Dispose();
+        //serialDataSource.Dispose();
+        dataSource.Dispose();
     }
 
     //Instantiates sensors after the data source is set up. Sets a bool to ensure sensors are only created once

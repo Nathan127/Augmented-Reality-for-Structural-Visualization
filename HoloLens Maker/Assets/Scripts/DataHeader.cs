@@ -157,7 +157,7 @@ namespace DataCollection
                 }
                 return true;
             }
-            catch(InvalidProgramException e)
+            catch(Exception e)
             {
                 Console.WriteLine($"Unable to parse header file:{e.InnerException}");
                 header = null;

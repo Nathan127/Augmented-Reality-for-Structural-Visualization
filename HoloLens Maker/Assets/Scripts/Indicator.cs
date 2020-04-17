@@ -60,7 +60,7 @@ public class Indicator : MonoBehaviour
     //Called in update to keep updated
     float calculatePercentage(float input)
     {
-        return ((input - valueMin)) / (valueMax - valueMin);
+        return (valueMax - valueMin > 0) ? ((input - valueMin)) / (valueMax - valueMin): 0;
     }
 
     //Called in update to keep updated
